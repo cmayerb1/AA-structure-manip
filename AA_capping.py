@@ -81,7 +81,7 @@ if __name__ == "__main__":
     # load in data file
     data = Chem.SDMolSupplier(args.in_file, removeHs=False)
     # create file writer
-    w = Chem.SDWriter("args.in_file"+"_capped.sdf")
+    w = Chem.SDWriter(args.in_file+"_capped.sdf")
     # loop through each input structure, cap and write to file
     for mol in data:
         mol2 = Chem.MolFromSmiles(bracketRemove(Chem.MolToSmiles(mol)))
