@@ -11,7 +11,6 @@ Short script for adding amide bond caps to alpha-amino acids.  Concept described
 Module imports
 """
 from rdkit import Chem
-from rdkit.Chem import AllChem
 from rdkit.Chem import rdChemReactions
 import argparse
 import re
