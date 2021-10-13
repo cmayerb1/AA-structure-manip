@@ -1,4 +1,4 @@
-# AA-structure-manip
+# Amino Acids Structure Manipulator
 
 ## Introduction
 
