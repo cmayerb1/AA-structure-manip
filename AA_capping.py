@@ -6,6 +6,9 @@ Created on Tue Oct 12 13:27:28 2021.
 """
 """
 Short script for adding amide bond caps to alpha-amino acids.  Concept described in Ilardo et al. (2015) (https://doi.org/10.1038/srep09414) using MOLGEN; current approach using RDKit used in Mayer-Bacon and Freeland (2021) (https://doi.org/10.1016/j.jtbi.2021.110661).
+
+Usage:
+...>python AA_capping.py <input file as .sdf> -out <output file as .sdf>
 """
 """
 Module imports
@@ -77,11 +80,12 @@ if __name__ == "__main__":
     # create argument parser, parse command line arguments
     parser = argparse.ArgumentParser(description='Caps alpha-amino acids from a user-defined input .sdf file.')
     parser.add_argument("in_file", help="Input file name (.sdf format) (required)")
+    parser.add_argument("-out", help="Name of output file (.sdf format) (required)")
     args = parser.parse_args()
     # load in data file
     data = Chem.SDMolSupplier(args.in_file, removeHs=False)
     # create file writer
-    w = Chem.SDWriter(args.in_file+"_capped.sdf")
+    w = Chem.SDWriter(args.out)
     # loop through each input structure, cap and write to file
     for mol in data:
         mol2 = Chem.MolFromSmiles(bracketRemove(Chem.MolToSmiles(mol)))
