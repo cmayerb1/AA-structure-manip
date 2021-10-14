@@ -6,6 +6,9 @@ Created on Tue Oct 12 14:02:49 2021.
 """
 """
 Short script to replace a pseudoatom (currently P) with another, constant substructure.  Currently configured to substitute a trivalent P atom with an alpha-amino backbone plus beta-carbon (e.g. an alanine moiety).  Future work could involve implementing user-specified pseudoatoms or replacement substructures.
+
+Usage:
+...>python pseudo_replace.py <input filename as .sdf> -out <output filename as .sdf>
 """
 """
 Module imports
@@ -39,7 +42,7 @@ def pseudoReplace(mol):
     three_h = Chem.MolFromSmarts("[PX3&H3]")
     # first match # of P non-H neighbors, then bonding patterns among those neighbors; return input molecule if no matches
     if mol.HasSubstructMatch(three_neighbor): # P with 0 hydrogens
-        rxn = rdChemReactions.ReactionFromSmarts("[PD3]([*:2])([*:3])[*:1]>>NC(C(=O)O)C([*:2])([*:3])[*:1]")
+        rxn = rdChemReactions.ReactionFromSmarts("[PD3,pD3]([*:2])([*:3])[*:1]>>NC(C(=O)O)C([*:2])([*:3])[*:1]")
         return rxn.RunReactant(mol,0)[0][0]
     elif mol.HasSubstructMatch(two_neighbor): # P with 2 neighbors
         if mol.HasSubstructMatch(Chem.MolFromSmarts("[PD2,pD2]=[*]")):
@@ -85,13 +88,14 @@ Main program
 """
 if __name__ == "__main__":
     # create argument parser, parse command line arguments
-    parser = argparse.ArgumentParser(description='Caps alpha-amino acids from a user-defined input .sdf file.')
+    parser = argparse.ArgumentParser(description='Replaces trivalent P in a user-defined input .sdf file with an alanine substructure.')
     parser.add_argument("in_file", help="Input file name (.sdf format) (required)")
+    parser.add_argument("-out", help="Name of output file (.sdf format) (required)")
     args = parser.parse_args()
     # load in data file
     data = Chem.SDMolSupplier(args.in_file, removeHs=False)
     # create file writer
-    w = Chem.SDWriter(args.in_file+"_pseudo-replace.sdf")
+    w = Chem.SDWriter(args.out)
     for mol in data:
         mol2 = Chem.MolFromSmiles(bracketRemove(Chem.MolToSmiles(mol)))
         new_mol = pseudoReplace(mol2)
