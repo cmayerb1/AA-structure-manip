@@ -1,12 +1,16 @@
 package main;
 
+import org.openscience.cdk.RingSet;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.isomorphism.Pattern;
 import org.openscience.cdk.isomorphism.VentoFoggia;
 import org.openscience.cdk.qsar.descriptors.molecular.JPlogPDescriptor;
 import org.openscience.cdk.qsar.descriptors.molecular.VABCDescriptor;
+import org.openscience.cdk.ringsearch.AllRingsFinder;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 
@@ -85,5 +89,30 @@ public class CDKdescriptors {
 		int[] match = pattern.match(ac);
 		if (match.length > 0) contains=true;
 		return contains;
+	}
+	
+	/**
+	 * Checking whether the molecule includes 3 or 4-membered rings.
+	 * 
+	 * @param ac	IAtomContainer
+	 * @return 		boolean 
+	 */
+	
+	public boolean includes3or4rings(IAtomContainer ac) {
+		boolean check=false;
+		AllRingsFinder ringsFinder = new AllRingsFinder();
+		RingSet search = new RingSet();
+		IRingSet ringSet = ringsFinder.findAllRings(ac);
+		search.add(ringSet);
+		
+		int atomCount=0;
+	    for (IAtomContainer container : ringSet.atomContainers()) {
+	    	atomCount=container.getAtomCount();
+	    	if(atomCount==3 || atomCount==4) {
+	    		check=true;
+	        	break;
+	        }   
+	    }
+	    return check;
 	}
 }
